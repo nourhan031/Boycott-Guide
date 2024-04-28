@@ -1,5 +1,49 @@
 :- consult('data.pl').
 
+% Check if item is a memeber of a list or not
+is_member(X,[X|_]).
+is_member(X,[_|T]):-
+    is_member(X,T).
+
+
+% Return the length of a list
+len([],0).
+len([_|T],L):-
+    len(T,NewL),
+    L is NewL+1.
+
+
+% (1)
+list_orders(CustomerUsername, Orders):-
+    customer(CustomerID, CustomerUsername),% Get the customer id
+    return_orders(CustomerID, [], Orders),% Call return_orders
+    !.
+
+return_orders(CustomerID, AccOrders, Orders) :-
+    order(CustomerID, OrderID, OrderItems),
+    \+ is_member(order(CustomerID, OrderID,_), AccOrders), % Ensure order is not already in the list
+    NewAccOrders = [order(CustomerID, OrderID, OrderItems) | AccOrders],
+    return_orders(CustomerID, NewAccOrders, Orders).
+return_orders(_,Orders, Orders).
+
+% (2)
+countOrdersOfCustomer(Customername,Count):-
+    list_orders(Customername,Result),
+    len(Result,Count).
+
+
+
+
+% (4) Returns the number of items of a cutomer buys
+% Takes customer name and order id and return the items number
+getNumOfItems(Name, OrderId , Result):-
+    customer(CustomerId,Name),% Returns the Customer ID
+    order(CustomerId,OrderId,List),% Use custoemr id and order id to get the items list
+    len(List,Result).% pass the list to len rule and it returns the length of this list
+
+
+
+
 % point 5
 % Calculate the price of a given order given customer Name and order id
 %
@@ -86,6 +130,52 @@ replaceBoycottItems([Item|Rest], [Item|UpdatedList]) :-
 boycottItem(Item) :-
     item(Item, Company, _),
     boycott_company(Company, _).
+
+
+
+%Point 10
+%Return the alternative items total price of a specific order
+getAlternativesTotalPrice(CustomerName,OrderID,Alternatives,TotalPrice):-
+  
+   getOrderItems(CustomerName,OrderID,Items),%First get order items
+   getAlternativesItems(Items,Alternatives),%then return alternatives of these items
+   getListPrice(Alternatives,Prices),%Get the Prices of each item in alternatives
+   getTotalPrice(Prices,TotalPrice),%finally compute the sum of all prices you get
+    !.
+
+% Get the list of items in a specific order using customer name and order id
+getOrderItems(CustomerName,OrderID , List):-
+    customer(CustomerID,CustomerName),
+    order(CustomerID,OrderID, List).
+
+
+% Return a list of prices for all items in the input list
+% Iterates on the list and save the price of each in Price[]
+getListPrice([H|[]],[Price|[]]):-
+    item(H,_,Price).
+getListPrice([H|T], Price):-
+    getListPrice(T,NewPrice),
+    item(H,_,X),
+    Price = [X|NewPrice].
+    
+
+% As the same of getListPrice but it returns the alternatives of an item list
+getAlternativesItems([H|[]],[Alternative|[]]):-
+    alternative(H,Alternative).
+
+getAlternativesItems([H|T], Alternatives):-
+    getAlternativesItems(T,NewA),
+    alternative(H,X),
+    Alternatives = [X|NewA].
+
+getAlternativesItems(Item,Item).%In case of the item has no alternatives
+
+% Takes a list of prices and return the sum of all elements.
+getTotalPrice([] , 0).
+getTotalPrice([H|T],Total):-
+    getTotalPrice(T,NewTotal),
+    Total is H + NewTotal.
+
     
 
 % point 11
