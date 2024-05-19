@@ -33,6 +33,14 @@ countOrdersOfCustomer(Customername,Count):-
 
 
 
+% point 3
+% find all items in a specific order for a given customer.
+getItemsInOrderById(CustomerName, OrderID, Items) :-
+	customer(CustomerID, CustomerName),
+	order(CustomerID, OrderID, Items),
+!.
+
+
 
 % (4) Returns the number of items of a cutomer buys
 % Takes customer name and order id and return the items number
@@ -186,3 +194,19 @@ getTheDifferenceInPriceBetweenItemAndAlternative(Item, Alternative, DiffPrice) :
     item(Item, _, ItemPrice),
     item(Alternative, _, AlternativePrice),
     DiffPrice is ItemPrice - AlternativePrice.
+
+
+% point 12
+%
+%  : Insert/Remove
+% Declare item/3 as dynamic
+:- dynamic item/3.
+
+% Predicate to add an item to the knowledge base
+add_item(ItemName, CompanyName, Price) :-
+    \+ item(ItemName, _, _), % Check if the item does not already exist
+    assertz(item(ItemName, CompanyName, Price)).
+
+% Predicate to remove an item from the knowledge base
+remove_item(ItemName, CompanyName, Price) :-
+    retract(item(ItemName, CompanyName, Price)). % Remove the item
