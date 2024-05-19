@@ -5,8 +5,7 @@ It provides various functionalities to list, count, and modify orders, check for
 
 **Usage:**<br>
 1- To list all orders of a customer by their username:<br>
-<code>list_orders(CustomerUsername, Orders).
-</code>
+<code>list_orders(CustomerUsername, Orders).</code>
 <br>
 2- To count the number of orders a customer has made:<br>
 <code>countOrdersOfCustomer(CustomerName, Count).</code>
