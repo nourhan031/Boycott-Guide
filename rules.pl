@@ -1,6 +1,6 @@
 :- consult('data.pl').
 
-% Check if item is a memeber of a list or not
+% Check if item is a member of a list or not
 is_member(X,[X|_]).
 is_member(X,[_|T]):-
     is_member(X,T).
@@ -46,7 +46,7 @@ getItemsInOrderById(CustomerName, OrderID, Items) :-
 % Takes customer name and order id and return the items number
 getNumOfItems(Name, OrderId , Result):-
     customer(CustomerId,Name),% Returns the Customer ID
-    order(CustomerId,OrderId,List),% Use custoemr id and order id to get the items list
+    order(CustomerId,OrderId,List),% Use customer id and order id to get the items list
     len(List,Result).% pass the list to len rule and it returns the length of this list
 
 
@@ -110,9 +110,6 @@ removeBoycottItemsFromOrder([Item|Rest], Acc, ModifiedOrder) :-
     item(Item, Company,_),                    % Get the company associated with the item
     \+ boycott_company(Company,_),            % Check if the company is not boycotted
     removeBoycottItemsFromOrder(Rest, [Item|Acc], ModifiedOrder). % Add the item to the accumulator and continue with the recursion
-
-
-
 
 
 % point 9
